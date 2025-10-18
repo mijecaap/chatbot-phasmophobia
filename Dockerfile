@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instalar dependencias
-RUN npm ci --only=production && npm cache clean --force
+RUN npm i --only=production && npm cache clean --force
 
 # Etapa de producción
 FROM node:18-alpine AS production

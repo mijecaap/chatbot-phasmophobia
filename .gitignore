@@ -40,5 +40,5 @@ out/
 
 # Docker
 .dockerignore
-Docker*
+Docker
 docker-compose*.yml

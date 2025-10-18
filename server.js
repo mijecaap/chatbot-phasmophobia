@@ -49,14 +49,34 @@ app.get('/', (req, res) => {
 
 // Ruta de salud para Easypanel
 app.get('/health', (req, res) => {
-    res.json({ 
+    const healthData = { 
         status: 'ok', 
         timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
         env: {
             nodeVersion: process.version,
             port: port,
-            webhookConfigured: !!process.env.WEBHOOK_URL
-        }
+            webhookConfigured: !!process.env.WEBHOOK_URL,
+            nodeEnv: process.env.NODE_ENV || 'development'
+        },
+        memory: process.memoryUsage(),
+        pid: process.pid
+    };
+    
+    console.log('🔍 Health check solicitado:', healthData);
+    res.json(healthData);
+});
+
+// Ruta de debug (solo para desarrollo/diagnóstico)
+app.get('/debug', (req, res) => {
+    res.json({
+        timestamp: new Date().toISOString(),
+        environment: process.env,
+        headers: req.headers,
+        url: req.url,
+        method: req.method,
+        ip: req.ip,
+        userAgent: req.get('User-Agent')
     });
 });
 
@@ -83,15 +103,28 @@ app.use((req, res) => {
 });
 
 // Iniciar servidor
-app.listen(port, '0.0.0.0', () => {
+const server = app.listen(port, '0.0.0.0', () => {
     console.log(`🚀 Servidor iniciado en puerto ${port}`);
     console.log(`🌐 Accede en: http://localhost:${port}`);
     console.log(`🔗 Webhook URL: ${process.env.WEBHOOK_URL || 'No configurada'}`);
+    console.log(`📊 Proceso PID: ${process.pid}`);
+    console.log(`🔧 NODE_ENV: ${process.env.NODE_ENV}`);
     
     // Validar configuración crítica
     if (!process.env.WEBHOOK_URL) {
         console.warn('⚠️  WEBHOOK_URL no está configurada');
     }
+    
+    console.log('✅ Servidor listo para recibir conexiones');
+});
+
+// Manejar errores del servidor
+server.on('error', (error) => {
+    console.error('❌ Error del servidor:', error);
+    if (error.code === 'EADDRINUSE') {
+        console.error(`❌ Puerto ${port} ya está en uso`);
+    }
+    process.exit(1);
 });
 
 // Manejo de señales de terminación

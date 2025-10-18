@@ -1,0 +1,44 @@
+# Gitignore para el proyecto Chatbot Phasmophobia
+
+# Variables de entorno
+.env
+.env.local
+.env.production
+
+# Archivos de log
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+
+# Dependencias de Node.js
+node_modules/
+.npm
+.pnpm-debug.log*
+yarn.lock
+package-lock.json
+
+# Archivos de cache
+.cache/
+.parcel-cache/
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de build (si se implementa un proceso de build)
+dist/
+build/
+out/
+
+# Docker
+.dockerignore
+Docker*
+docker-compose*.yml
